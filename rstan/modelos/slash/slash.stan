@@ -46,11 +46,11 @@ model{
   b1T ~ beta(5, 1.5);
   b2 ~ normal(0, 3.2);
   s2 ~ inv_gamma(2.5, 0.025);
-  v ~ gamma(2, 0.25);
+  v ~ gamma(2.0, 0.25);
   
   //--- Sampling volatilitys:
   h_std ~ std_normal();
-  l ~ beta( v, 1);
+  for(t in 1:T) l[t] ~ beta( v, 1 );
   
   //--- Sampling observations:
   //y ~ normal( mu_t, exp(h/2) * l );
