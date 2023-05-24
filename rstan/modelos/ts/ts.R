@@ -31,7 +31,8 @@ cols = c('mean', 'sd', 'X2.5.', 'X97.5.', 'n_eff','Rhat')
 summary = Y[rows, cols]
 summary
 # h
-rhat_h = Y[stringr::str_detect(row.names(Y), pattern = '^h'),][, 'Rhat']
+rhat_h = Y[stringr::str_detect(row.names(Y), pattern = '^h') & 
+           stringr::str_detect(row.names(Y), pattern = '_', negate = TRUE),][, 'Rhat']
 plot(rhat_h, main = 'h')
 abline(h = 0.95)
 abline(h = 1)
