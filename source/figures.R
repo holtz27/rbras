@@ -1,6 +1,6 @@
 trace_plots = function(draws, names){
   n = nrow( draws )
-  
+  par(mfrow = c(1,1))
   mat = matrix(seq(1, 3 * n), nrow = 3, byrow = FALSE)
   layout( mat )
   
