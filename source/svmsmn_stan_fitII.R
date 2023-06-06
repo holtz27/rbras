@@ -5,7 +5,8 @@ svmsmn_stan_fitII = function(data,
                              nchains = 3, 
                              lags = 1,
                              model_name,
-                             normal ){
+                             normal,
+                             cores){
   
   model_selection = data.frame()
   fit = sampling(model, 
@@ -77,7 +78,7 @@ svmsmn_stan_fitII = function(data,
                      draws = draws[ c( 4:6, 
                                        8:(T+7),
                                        (T+8):(nrow(draws)) ), ],
-                     cores = 4
+                     cores = cores
     )
   }
   
