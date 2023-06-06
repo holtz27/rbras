@@ -40,7 +40,8 @@ svmsmn_stan_fitII = function(data,
                        draws = draws[4:(nrow(draws)), ])
     ############### loo
     loo = svmsmn_loo(data = y, y0 = 0, 
-                     draws = draws[4:(nrow(draws)), ])
+                     draws = draws[4:(nrow(draws)), ],
+                    cores = cores)
   }else{
     # Theta draws
     draws = matrix(c( parameters$mu,
