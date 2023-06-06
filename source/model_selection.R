@@ -103,7 +103,7 @@ svmsmn_waic = function(data, y0, draws){
   return( waic )
 }
 ############### loo
-svmsmn_loo = function(data, y0, draws){
+svmsmn_loo = function(data, y0, draws, cores){
   
   T = length( data )
   data_past = c( y0, data[1:(T-1)] )
@@ -123,7 +123,7 @@ svmsmn_loo = function(data, y0, draws){
                  data_ = data,
                  data_past = data_past,
                  T = T,
-                 cores = getOption('mc.cores', 3)
+                 cores = getOption('mc.cores', cores)
   )
   return( loo )
 }
