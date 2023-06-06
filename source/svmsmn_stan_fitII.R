@@ -16,8 +16,8 @@ svmsmn_stan_fitII = function(data,
                  chains = nchains)
   
   parameters = extract( fit )
-  
-  source('source/model_selection.R')
+  source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/model_selection.R' )
+  #source('source/model_selection.R')
   if( normal ){
     # Theta draws
     draws = matrix(c( parameters$mu,
