@@ -6,7 +6,6 @@ svmsmn_stan_fitII = function(data,
                              lags = 1,
                              model_name,
                              normal,
-                             lags = 1,
                              cores){
   
   model_selection = data.frame()
