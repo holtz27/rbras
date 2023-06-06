@@ -1,12 +1,12 @@
 library(rstan)
 options( mc.cores = 4 )
 source('https://raw.githubusercontent.com/holtz27/rbras/main/source/estudo_priori_stan.R')
-# n° replicações
-r = 1
-seeds = sample(1:1e6, r)
 # priori 1
 path = 'C:/Users/8936381/Documents/rstan/ts/priori2.stan'
 model = stan_model( path )
+# n° replicações
+r = 1
+seeds = sample(1:1e6, r)
 priori2 = estudo_priori_stan(y0 = 0,
                              model = model,
                              M = 7.5e3,
