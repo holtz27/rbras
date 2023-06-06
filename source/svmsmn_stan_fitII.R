@@ -9,6 +9,7 @@ svmsmn_stan_fitII = function(data,
                              cores){
   
   model_selection = data.frame()
+  T = length( data )
   fit = sampling(model, 
                  list(T = length( data ), 
                       y = data,
