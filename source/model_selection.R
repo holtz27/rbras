@@ -89,7 +89,7 @@ svmsmn_dic = function(data, y0, param_draws){
 }
 ############### waic
 svmsmn_waic = function(data, y0, draws){
-  
+  T = length( data )
   X = sapply(X = data, 
              FUN = loglik,
              draws,
