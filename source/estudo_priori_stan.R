@@ -30,13 +30,13 @@ estudo_priori_stan = function(y0,
                 T = 2e3,
                 seed = seeds[ i ]
     )
-    
+    cat( i )
     param_hat[, i] = svmsmn_stan_fit(data = y, y0,
                                      model, 
                                      M, 
                                      nchains,
                                      lags)
-    
+    cat( '\r' )
     if( i == r ) time.final = Sys.time()
   }
   
