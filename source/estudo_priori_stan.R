@@ -20,7 +20,7 @@ estudo_priori_stan = function(y0,
     if( i == 1 ) time.init = Sys.time()
     
     y = ts_data(mu = -1.0, phi = 0.985, sigma = 0.13,
-                b0 = 0.01, b1 = 0.1, b2 = -0.23,
+                b0 = 0.01, b1 = 0.1, b2 = -0.02,
                 y0 = 0,
                 v = 10, 
                 T = 2e3,
