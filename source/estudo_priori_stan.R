@@ -6,9 +6,7 @@ estudo_priori_stan = function(y0,
                               r, 
                               seeds){
   
-  #source('C:/Users/8936381/Documents/source/ts_data.R')
   source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/ts_data.R' )
-  #source('C:/Users/8936381/Documents/source/svmsmn_stan_fit.R')
   source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/svmsmn_stan_fit.R' )
   
   param = matrix(c(-1.0, 0.985, 0.13,
