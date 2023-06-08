@@ -10,7 +10,7 @@ estudo_priori_stan = function(y0,
   source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/svmsmn_stan_fit.R' )
   
   param = matrix(c(-1.0, 0.985, 0.13,
-                   0.01, 0.1, -0.23,
+                   0.01, 0.1, -0.02,
                    10), ncol = 1)
   
   param_hat = matrix(nrow = 7, ncol = r)
