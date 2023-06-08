@@ -9,7 +9,7 @@ estudo_priori_stan = function(y0,
   source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/ts_data.R' )
   source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/svmsmn_stan_fit.R' )
   
-  param = matrix(c(-1.0, 0.985, 0.13,
+  param = matrix(c(1.0, 0.985, 0.13,
                    0.01, 0.1, -0.02,
                    10), ncol = 1)
   
@@ -19,7 +19,7 @@ estudo_priori_stan = function(y0,
     
     if( i == 1 ) time.init = Sys.time()
     
-    y = ts_data(mu = -1.0, phi = 0.985, sigma = 0.13,
+    y = ts_data(mu = 1.0, phi = 0.985, sigma = 0.13,
                 b0 = 0.01, b1 = 0.1, b2 = -0.02,
                 y0 = 0,
                 v = 10, 
