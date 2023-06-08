@@ -13,8 +13,6 @@ estudo_priori_stan = function(y0,
                    0.01, 0.1, -0.23,
                    10), ncol = 1)
   
-  #r = 2
-  #seeds = sample(1:1e6, r)
   param_hat = matrix(nrow = 7, ncol = r)
   
   for( i in 1:r ){
