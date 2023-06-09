@@ -9,7 +9,7 @@ parameters{
   real<lower=0> s2;
   vector[T] h_std;  // std log volatility time t
   vector<lower=0>[T] l;
-  real<lower=2> v; 
+  real<lower=0> v; 
   real<lower=-1,upper=1> b1T;
   real b0;
   real b2;
