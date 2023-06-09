@@ -1,5 +1,6 @@
 estudo_priori_stan = function(y0,
-                              model, 
+                              model,
+                              v,
                               M,
                               warmup,
                               nchains,
@@ -23,7 +24,7 @@ estudo_priori_stan = function(y0,
     y = ts_data(mu = 1.0, phi = 0.985, sigma = 0.13,
                 b0 = 0.01, b1 = 0.1, b2 = -0.02,
                 y0 = 0,
-                v = 10, 
+                v = v, 
                 T = 2e3,
                 seed = seeds[ i ]
     )
