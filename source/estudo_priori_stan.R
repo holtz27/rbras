@@ -1,6 +1,7 @@
 estudo_priori_stan = function(y0,
                               model, 
-                              M, 
+                              M,
+                              warmup,
                               nchains,
                               lags,
                               r, 
@@ -27,9 +28,11 @@ estudo_priori_stan = function(y0,
                 seed = seeds[ i ]
     )
     cat( paste0('réplica ', i ) )
-    param_hat[, i] = svmsmn_stan_fit(data = y, y0,
+    param_hat[, i] = svmsmn_stan_fit(data = y, 
+                                     y0,
                                      model, 
-                                     M, 
+                                     M,
+                                     warmup,
                                      nchains,
                                      lags)
     cat( '\r' )
