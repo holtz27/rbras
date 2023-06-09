@@ -1,7 +1,7 @@
 svmsmn_stan_fit = function(data, 
                            y0, 
                            model, 
-                           warmup
+                           warmup,
                            M, 
                            nchains, 
                            lags){
