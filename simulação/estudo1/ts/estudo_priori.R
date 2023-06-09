@@ -9,9 +9,10 @@ r = 1
 seeds = sample(1:1e6, r)
 priori2 = estudo_priori_stan(y0 = 0,
                              model = model,
-                             M = 7.5e3,
+                             M = 500,
+                             warmup = 5e3,
                              nchains = 4,
-                             lags = 5,
+                             lags = 1,
                              r = r,
                              seeds = seeds )
 priori1$summary
