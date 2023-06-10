@@ -13,7 +13,7 @@ estudo_priori_stan = function(y0,
   
   param = matrix(c(1.0, 0.985, 0.13,
                    0.01, 0.1, -0.02,
-                   10), ncol = 1)
+                   v), ncol = 1)
   
   param_hat = matrix(nrow = 7, ncol = r)
   
