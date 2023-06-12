@@ -29,5 +29,5 @@ ts_data = function(mu, phi, sigma,
     }
   }
   
-  return( y )
+  return( list(y=y, h=h, l=l) )
 }
