@@ -1,27 +1,104 @@
 library(rstan)
 options( mc.cores = 4 )
 
-path1 = 'C:/Users/8936381/Documents/rstan/Estudo_simulação/Estudo1/ts/ts_priori1.stan'
-model1 = stan_model( path1 )
+model1 = stan_model( model_code = 'data{
+                                   int<lower=0> T;
+                                   real y0;
+                                   vector[T] y;
+                                   real mu;                         // mean log volatility
+                                   real<lower=-1,upper=1> phi;     // persistence of volatility
+                                   real<lower=0> sigma;
+                                   vector[T] h;                // std log volatility time t
+                                   vector<lower=0>[T] l;
+                                   real<lower=-1,upper=1> b1;
+                                   real b0;
+                                   real b2;
+                                   }
+                                   parameters{
+                                     real<lower=2> v;
+                                   }
+                                   model{
+                                     // --- prioris
+                                     v ~ gamma(12, 0.8);
+                                     
+                                     //--- Sampling volatilitys:
+                                     for(t in 1:T) l[t] ~ gamma(0.5 * v, 0.5 * v);
+                                    
+                                     //--- Sampling observations:
+                                     y[1] ~ normal( b0 + b1 * y0 + b2 * exp( h[1] ), exp( 0.5 * h[1] ) / sqrt( l[1] ) );
+                                     for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
+                                   }' )
 
-path2 = 'C:/Users/8936381/Documents/rstan/Estudo_simulação/Estudo1/ts/ts_priori2.stan'
-model2 = stan_model( path2 )
+model2 = stan_model( model_code = 'data{
+                                   int<lower=0> T;
+                                   real y0;
+                                   vector[T] y;
+                                   real mu;                         // mean log volatility
+                                   real<lower=-1,upper=1> phi;     // persistence of volatility
+                                   real<lower=0> sigma;
+                                   vector[T] h;                // std log volatility time t
+                                   vector<lower=0>[T] l;
+                                   real<lower=-1,upper=1> b1;
+                                   real b0;
+                                   real b2;
+                                 }
+                                 parameters{
+                                   real<lower=2> v;
+                                 }
+                                 model{
+                                   // --- prioris
+                                   target += 0.5 * log( v /( v+3 ) ) + 0.5 * log( trigamma( 0.5 * v ) - trigamma( 0.5 * (v+1) ) - 2 * ( v + 3 ) / ( v * square(v+1) ) );
+                                
+                                   //--- Sampling volatilitys:
+                                   for(t in 1:T) l[t] ~ gamma(0.5 * v, 0.5 * v);
+                                  
+                                   //--- Sampling observations:
+                                   y[1] ~ normal( b0 + b1 * y0 + b2 * exp( h[1] ), exp( 0.5 * h[1] ) / sqrt( l[1] ) );
+                                   for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
+                                 }')
 
-path3 = 'C:/Users/8936381/Documents/rstan/Estudo_simulação/Estudo1/ts/ts_priori3.stan'
-model3 = stan_model( path3 )
+model3 = stan_model( model_code = 'data{
+                                   int<lower=0> T;
+                                   real y0;
+                                   vector[T] y;
+                                   real mu;                         // mean log volatility
+                                   real<lower=-1,upper=1> phi;     // persistence of volatility
+                                   real<lower=0> sigma;
+                                   vector[T] h;                // std log volatility time t
+                                   vector<lower=0>[T] l;
+                                   real<lower=-1,upper=1> b1;
+                                   real b0;
+                                   real b2;
+                                 }
+                                 parameters{
+                                   real<lower=0.02,upper=0.5> lambda;
+                                   real<lower=2> v; 
+                                 }
+                                 model{
+                                   // --- prioris
+                                   lambda ~ uniform(0.02, 0.5);
+                                   v ~ exponential( lambda );
+                                  
+                                   //--- Sampling volatilitys:
+                                   for(t in 1:T) l[t] ~ gamma(0.5 * v, 0.5 * v);
+                                  
+                                   //--- Sampling observations:
+                                   y[1] ~ normal( b0 + b1 * y0 + b2 * exp( h[1] ), exp( 0.5 * h[1] ) / sqrt( l[1] ) );
+                                   for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
+                                 }' )
 
 M = 500
 warmup = 500
-r = 10
+r = 2
 v1 = v2 = v3 = rep(0, r)
+tails = c( 5, 10, 15, 20 )
+summary = data.frame()
 
-for( v in c(5, 10, 15, 20) ){
+for( v in tails ){
+  if( v == tails[1] ) time.init = Sys.time()
   for( i in 1:r ){
     
     cat( paste0('réplica ', i, ' com o parâmetro v = ', v ) )
-    
-    if( i == 1 ) time.init = Sys.time()
-    
     mu = 1.0
     phi = 0.985
     sigma = 0.13
@@ -102,30 +179,29 @@ for( v in c(5, 10, 15, 20) ){
     v3[ i ] = mean( extract( fit3 )$v )
     
     cat( '\r' )
-    if( i == r ) time.final = Sys.time()
     
   }
+  
+  vies = matrix( c(vies1 = mean( v1 - v ),
+                   vies2 = mean( v2 - v ),
+                   vies3 = mean( v3 - v )), ncol = 1 )
+  
+  smse = matrix( c(smse1 = mean( (v1 - v)**2 ),
+                   smse2 = mean( (v2 - v)**2 ),
+                   smse3 = mean( (v3 - v)**2 )), ncol = 1)
+  
+  data = cbind(vies, smse, v)
+  data = data.frame( data )
+  data = round( data, digits = 3 )
+  summary = rbind(summary, data)
+  if( v == tails[ length(tails) ] ) time.final = Sys.time()
+  
 } 
-  
-  
-  
-  
-
 
 # Total time
 time.final - time.init
 
-vies = matrix( c(vies1 = mean( v1 - v ),
-                 vies2 = mean( v2 - v ),
-                 vies3 = mean( v3 - v )), ncol = 1 )
-
-smse = matrix( c(smse1 = mean( (v1 - v)**2 ),
-                 smse2 = mean( (v2 - v)**2 ),
-                 smse3 = mean( (v3 - v)**2 )), ncol = 1)
-
-summary = cbind(vies, smse)
-summary = data.frame( summary )
-row.names( summary ) = c('priori1', 'priori2','priori3')
-colnames( summary ) = c( 'vies', 'smse')
-round( summary, digits = 3 )
-
+#row.names( summary ) = rep(c('priori1', 'priori2','priori3'), length(tails))  
+colnames( summary ) = c( 'vies', 'smse', 'v' )
+summary
+  
