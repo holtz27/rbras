@@ -45,15 +45,20 @@ estudo_priori_stan = function(y0,
   }
   
   #vies
-  vies = apply( param_hat - matrix( rep(param, r), ncol = r ), 1, mean )
+  vies = mean( param_hat - v )
   vies = data.frame( vies )
-  row.names(vies) = c('mu', 'phi', 'sigma',
-                      'b0', 'b1', 'b2', 'v')
+  row.names(vies) = c( 'v' )
+  #vies = apply( param_hat - matrix( rep(param, r), ncol = r ), 1, mean )
+  #vies = data.frame( vies )
+  #row.names(vies) = c('mu', 'phi', 'sigma',
+  #                    'b0', 'b1', 'b2', 'v')
   #smse
-  smse = apply( (param_hat - matrix( rep(param, r), ncol = r ))**2, 1, mean )
+  smse = mean( (param_hat - v)**2 )
   smse = sqrt( smse )
+  #smse = apply( (param_hat - matrix( rep(param, r), ncol = r ))**2, 1, mean )
+  #smse = sqrt( smse )
   
-  summary = cbind(vies,smse)
+  summary = cbind(vies, smse)
   
   return( list( summary = summary, 
                 time = time.final - time.init) )
