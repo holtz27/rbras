@@ -115,11 +115,11 @@ estudo1 = function(M = 500,
       set.seed( data_seed )
       for(t in 1:T){
         if(t == 1){
-          l[t] = rgamma(1, shape = v/2, rate = v/2)
+          l[t] = rbeta(1, v, 1)
           h[t] = rnorm(1, mean = mu, sd = sigma * 1 / sqrt( (1 - phi * phi) ) )
           y[t] = rnorm(1, b0 + b1 * y0 + b2 * exp( h[t] ), exp(h[t]/2) / sqrt( l[t] ))
         }else{
-          l[t] = rgamma(1, shape = v/2, rate = v/2)
+          l[t] = rbeta(1, v, 1)
           h[t] = rnorm(1, mean = (mu + phi * ( h[t-1] - mu )), sd = sigma)
           y[t] = rnorm(1, b0 + b1 * y[t-1] + b2 * exp(h[t]), exp(h[t]/2) / sqrt( l[t] ))
         }
