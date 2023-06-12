@@ -22,7 +22,7 @@ model1 = stan_model( model_code = 'data{
                                      v ~ gamma(12, 0.8);
                                      
                                      //--- Sampling volatilitys:
-                                     for(t in 1:T) l[t] ~ gamma(0.5 * v, 0.5 * v);
+                                     for(t in 1:T) l[t] ~ beta( v, 1 );
                                     
                                      //--- Sampling observations:
                                      y[1] ~ normal( b0 + b1 * y0 + b2 * exp( h[1] ), exp( 0.5 * h[1] ) / sqrt( l[1] ) );
@@ -50,7 +50,7 @@ model2 = stan_model( model_code = 'data{
                                    target += 0.5 * log( v /( v+3 ) ) + 0.5 * log( trigamma( 0.5 * v ) - trigamma( 0.5 * (v+1) ) - 2 * ( v + 3 ) / ( v * square(v+1) ) );
                                 
                                    //--- Sampling volatilitys:
-                                   for(t in 1:T) l[t] ~ gamma(0.5 * v, 0.5 * v);
+                                   for(t in 1:T) l[t] ~ beta( v, 1 );
                                   
                                    //--- Sampling observations:
                                    y[1] ~ normal( b0 + b1 * y0 + b2 * exp( h[1] ), exp( 0.5 * h[1] ) / sqrt( l[1] ) );
@@ -80,7 +80,7 @@ model3 = stan_model( model_code = 'data{
                                    v ~ exponential( lambda );
                                   
                                    //--- Sampling volatilitys:
-                                   for(t in 1:T) l[t] ~ gamma(0.5 * v, 0.5 * v);
+                                   for(t in 1:T) l[t] ~ beta( v, 1 );
                                   
                                    //--- Sampling observations:
                                    y[1] ~ normal( b0 + b1 * y0 + b2 * exp( h[1] ), exp( 0.5 * h[1] ) / sqrt( l[1] ) );
