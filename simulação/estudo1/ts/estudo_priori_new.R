@@ -87,12 +87,12 @@ model3 = stan_model( model_code = 'data{
                                    for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
                                  }' )
 
-estudo1 = function(){
-  M = 500
-  warmup = 500
-  r = 2
+estudo1 = function(M = 500,
+                   warmup = 500,
+                   r = 2,
+                   tails = c( 5, 10, 15, 20 ) ){
+  
   v1 = v2 = v3 = rep(0, r)
-  tails = c( 5, 10, 15, 20 )
   summary = data.frame()
   
   for( v in tails ){
