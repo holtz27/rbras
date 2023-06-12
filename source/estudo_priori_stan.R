@@ -21,15 +21,16 @@ estudo_priori_stan = function(y0,
     
     if( i == 1 ) time.init = Sys.time()
     
-    y = ts_data(mu = 1.0, phi = 0.985, sigma = 0.13,
+    data = ts_data(mu = 1.0, phi = 0.985, sigma = 0.13,
                 b0 = 0.01, b1 = 0.1, b2 = -0.02,
                 y0 = 0,
                 v = v, 
                 T = 2e3,
                 seed = seeds[ i ]
     )
+    
     cat( paste0('réplica ', i, ' com o parâmetro v = ', v ) )
-    param_hat[, i] = svmsmn_stan_fit(data = y, 
+    param_hat[, i] = svmsmn_stan_fit(data = data$y, 
                                      y0,
                                      model, 
                                      M,
