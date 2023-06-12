@@ -41,7 +41,10 @@ estudo_priori_stan = function(y0,
                                      nchains,
                                      lags)
     cat( '\r' )
-    if( i == r ) time.final = Sys.time()
+    if( i == r ){
+      time.final = Sys.time()
+      cat( '\n' )
+      }
   }
   
   #vies
