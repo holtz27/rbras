@@ -19,7 +19,7 @@ model1 = stan_model( model_code = 'data{
                                    }
                                    model{
                                      // --- prioris
-                                     v ~ gamma(12, 0.8);
+                                     v ~ gamma(2.0, 0.25);
                                      
                                      //--- Sampling volatilitys:
                                      for(t in 1:T) l[t] ~ beta( v, 1 );
