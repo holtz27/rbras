@@ -1,16 +1,16 @@
-estudo1 = function(M = 500,
-                   warmup = 500,
-                   r = 10,
+estudo1 = function(M,
+                   warmup,
                    model1, model2, model3,
-                   tails = c( 5, 10 ),
-                   mu = 1.0,
-                   phi = 0.985,
-                   sigma = 0.15,
-                   b0 = 0.2,
-                   b1 = 0.03,
-                   b2 = -0.05,
-                   y0 = 0,
-                   T = 2e3 ){
+                   r,
+                   tails,
+                   mu,
+                   phi,
+                   sigma,
+                   b0,
+                   b1,
+                   b2,
+                   y0,
+                   T){
   
   v1 = v2 = v3 = rep(0, r)
   
