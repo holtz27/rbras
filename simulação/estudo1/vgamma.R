@@ -1,5 +1,6 @@
 library(rstan)
 options( mc.cores = 4 )
+source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/estudo1.R' )
 
 model1 = stan_model( model_code = 'data{
                                    int<lower=0> T;
@@ -87,122 +88,8 @@ model3 = stan_model( model_code = 'data{
                                    for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
                                  }' )
 
-estudo1 = function(M = 500,
-                   warmup = 500,
-                   r = 10,
-                   tails = c( 5, 10, 15, 20 ) ){
-  
-  v1 = v2 = v3 = rep(0, r)
-  summary = data.frame()
-  
-  for( v in tails ){
-    if( v == tails[1] ) time.init = Sys.time()
-    for( i in 1:r ){
-      
-      cat( paste0('réplica ', i, ' com o parâmetro v = ', v ) )
-      mu = 1.0
-      phi = 0.985
-      sigma = 0.13
-      b0 = 0.01
-      b1 = 0.1
-      b2 = -0.02
-      y0 = 0
-      v = v #( log(v) )
-      T = 2e3
-      y = h = l = rep(0, T)
-      
-      data_seed = sample( 1:1e6, 1 )
-      set.seed( data_seed )
-      for(t in 1:T){
-        if(t == 1){
-          l[t] = 1 / rgamma(1, shape = 0.5 * v, rate = 0.5 * v)
-          h[t] = rnorm(1, mean = mu, sd = sigma * 1 / sqrt( (1 - phi * phi) ) )
-          y[t] = rnorm(1, b0 + b1 * y0 + b2 * exp( h[t] ), exp(h[t]/2) / sqrt( l[t] ))
-        }else{
-          l[t] = 1 / rgamma(1, shape = 0.5 * v, rate = 0.5 * v)
-          h[t] = rnorm(1, mean = (mu + phi * ( h[t-1] - mu )), sd = sigma)
-          y[t] = rnorm(1, b0 + b1 * y[t-1] + b2 * exp(h[t]), exp(h[t]/2) / sqrt( l[t] ))
-        }
-      }
-      
-      fit1 = sampling(model1, 
-                      list(T = T, 
-                           y = y,
-                           y0 = 0,
-                           mu = 1.0,
-                           phi = 0.985,
-                           sigma = 0.13,
-                           h = h,
-                           l = l,
-                           b0 = 0.01,
-                           b1 = 0.1,
-                           b2 = -0.02),
-                      iter = warmup + M,
-                      warmup = warmup,
-                      thin = 1,
-                      chains = 4 )
-      v1[ i ] = mean( extract( fit1 )$v )
-      
-      fit2 = sampling(model2, 
-                      list(T = T, 
-                           y = y,
-                           y0 = 0,
-                           mu = 1.0,
-                           phi = 0.985,
-                           sigma = 0.13,
-                           h = h,
-                           l = l,
-                           b0 = 0.01,
-                           b1 = 0.1,
-                           b2 = -0.02),
-                      iter = warmup + M,
-                      warmup = warmup,
-                      thin = 1,
-                      chains = 4 )
-      v2[ i ] = mean( extract( fit2 )$v )
-      
-      fit3 = sampling(model3, 
-                      list(T = T, 
-                           y = y,
-                           y0 = 0,
-                           mu = 1.0,
-                           phi = 0.985,
-                           sigma = 0.13,
-                           h = h,
-                           l = l,
-                           b0 = 0.01,
-                           b1 = 0.1,
-                           b2 = -0.02),
-                      iter = warmup + M,
-                      warmup = warmup,
-                      thin = 1,
-                      chains = 4 )
-      v3[ i ] = mean( extract( fit3 )$v )
-      
-      cat( '\r' )
-      
-    }
-    
-    vies = matrix( c(vies1 = mean( v1 - v ),
-                     vies2 = mean( v2 - v ),
-                     vies3 = mean( v3 - v )), ncol = 1 )
-    
-    smse = matrix( c(smse1 = mean( (v1 - v)**2 ),
-                     smse2 = mean( (v2 - v)**2 ),
-                     smse3 = mean( (v3 - v)**2 )), ncol = 1)
-    
-    data = cbind(vies, smse, v)
-    data = data.frame( data )
-    data = round( data, digits = 3 )
-    summary = rbind(summary, data)
-    if( v == tails[ length(tails) ] ) time.final = Sys.time()
-    
-  } 
-  
-  #row.names( summary ) = rep(c('priori1', 'priori2','priori3'), length(tails))  
-  colnames( summary ) = c( 'vies', 'smse', 'v' )
-  return( list(summary = summary, time = time.final - time.init) )
-}
-
-estudo1( r = 2 )
-
+x = estudo1( model1 = model1,
+             model2 = model2,
+             model3 = model3,
+             tails = c( 5, 10, 15 ),
+             r = 1 )
