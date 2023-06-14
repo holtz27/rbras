@@ -11,7 +11,7 @@ vgamma_estudo1 = function(M,
                    b2,
                    y0,
                    T){
-  
+  source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/data/vgamma_data.R' )
   v1 = v2 = v3 = rep(0, r)
   
   for( v in tails ){
