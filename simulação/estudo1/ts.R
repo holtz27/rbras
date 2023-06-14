@@ -91,7 +91,7 @@ model3 = stan_model( model_code = 'data{
 x = ts_estudo1( M = 500,
              warmup = 500,
              model1 = model1, model2 = model2, model3 = model3,
-             r = 10,
+             r = 200,
              tails = c( 5, 10, 15, 20 ),
              mu = 1.0,
              phi = 0.985,
