@@ -18,28 +18,13 @@ ts_estudo1 = function(M,
     if( v == tails[1] ) time.init = Sys.time()
     for( i in 1:r ){
       cat( paste0('réplica ', i, ' com o parâmetro v = ', v ) )
+      # Data generation
       data.gen = ts_data(mu = mu, phi = phi, sigma = sigma,
                          b0 = b0, b1 = b1, b2 = b2,
                          y0 = y0, v = v, T = T, seed = seeds[ i ])
       y = data.gen$y
       h = data.gen$h
       l = data.gen$l
-      # Data generation
-      #y = h = l = rep(0, T)
-      #data_seed = sample( 1:1e6, 1 )
-      #set.seed( data_seed )
-      #for(t in 1:T){
-      #  if(t == 1){
-      #    l[t] = rgamma(1, shape = 0.5 * v, rate = 0.5 * v)
-      #    h[t] = rnorm(1, mean = mu, sd = sigma * 1 / sqrt( (1 - phi * phi) ) )
-      #    y[t] = rnorm(1, b0 + b1 * y0 + b2 * exp( h[t] ), exp(h[t]/2) / sqrt( l[t] ))
-      #  }else{
-      #    l[t] = rgamma(1, shape = 0.5 * v, rate = 0.5 * v)
-      #    h[t] = rnorm(1, mean = (mu + phi * ( h[t-1] - mu )), sd = sigma)
-      #    y[t] = rnorm(1, b0 + b1 * y[t-1] + b2 * exp(h[t]), exp(h[t]/2) / sqrt( l[t] ))
-      #  }
-      #}
-      
       # models fit
       fit1 = sampling(model1, 
                       list(T = T, 
