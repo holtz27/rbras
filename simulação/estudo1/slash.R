@@ -1,6 +1,6 @@
 library(rstan)
 options( mc.cores = 4 )
-source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/estudo1.R' )
+source( 'source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/slash_estudo1.R' )
 
 model1 = stan_model( model_code = 'data{
                                    int<lower=0> T;
