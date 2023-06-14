@@ -88,8 +88,8 @@ slash_estudo1 = function(M,
     vies = matrix( c(vies1 = mean( v1 - v ),
                      vies2 = mean( v2 - v ),
                      vies3 = mean( v3 - v )), ncol = 1 )
-    vies = round( vies, digits = 3 )
-    #smse = matrix( c(smse1 = mean( (v1 - v)**2 ),
+    #vies = round( vies, digits = 3 )
+    smse = matrix( c(smse1 = mean( (v1 - v)**2 ),
                      smse2 = mean( (v2 - v)**2 ),
                      smse3 = mean( (v3 - v)**2 )), ncol = 1)
     #smse = round( smse, digits = 3 )
