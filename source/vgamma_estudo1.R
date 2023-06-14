@@ -21,9 +21,9 @@ vgamma_estudo1 = function(M,
       cat( paste0('réplica ', i, ' com o parâmetro v = ', v ) )
       
       # Data generation
-      data.gen = slash_data(mu = mu, phi = phi, sigma = sigma,
-                            b0 = b0, b1 = b1, b2 = b2,
-                            y0 = y0, v = v, T = T, seed = seeds[ i ])
+      data.gen = vgamma_data(mu = mu, phi = phi, sigma = sigma,
+                             b0 = b0, b1 = b1, b2 = b2,
+                             y0 = y0, v = v, T = T, seed = seeds[ i ])
       # Data generation
       y = data.gen$y
       h = data.gen$h
