@@ -87,13 +87,13 @@ model3 = stan_model( model_code = 'data{
                                    y[1] ~ normal( b0 + b1 * y0 + b2 * exp( h[1] ), exp( 0.5 * h[1] ) / sqrt( l[1] ) );
                                    for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
                                  }' )
-r = 2
+r = 200
 set.seed( 47 )
 seeds = sample(1:1e6, r)
 x = vgamma_estudo1( M = 500,
              warmup = 500,
              model1 = model1, model2 = model2, model3 = model3,
-             r = 200,
+             r = r,
              tails = c( 5, 10, 15, 20 ),
              mu = 1.0,
              phi = 0.985,
