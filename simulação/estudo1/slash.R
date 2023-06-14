@@ -16,7 +16,7 @@ model1 = stan_model( model_code = 'data{
                                    real b2;
                                    }
                                    parameters{
-                                     real<lower=2> v;
+                                     real<lower=0> v;
                                    }
                                    model{
                                      // --- prioris
@@ -44,7 +44,7 @@ model2 = stan_model( model_code = 'data{
                                    real b2;
                                  }
                                  parameters{
-                                   real<lower=2> v;
+                                   real<lower=0> v;
                                  }
                                  model{
                                    // --- prioris
@@ -73,7 +73,7 @@ model3 = stan_model( model_code = 'data{
                                  }
                                  parameters{
                                    real<lower=0.02,upper=0.5> lambda;
-                                   real<lower=2> v; 
+                                   real<lower=0> v; 
                                  }
                                  model{
                                    // --- prioris
