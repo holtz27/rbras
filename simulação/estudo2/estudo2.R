@@ -70,7 +70,7 @@ ts_fit = stan_model( model_code = 'data{
                                         vector[T] h_std;  // std log volatility time t
                                         vector<lower=0>[T] l;
                                         real<lower=0.02,upper=0.5> lambda;
-                                        real<lower=0> v; 
+                                        real<lower=2> v; 
                                         real<lower=-1,upper=1> b1T;
                                         real b0;
                                         real b2;
