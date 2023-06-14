@@ -10,7 +10,7 @@ model1 = stan_model( model_code = 'data{
                                    real<lower=-1,upper=1> phi;      // persistence of volatility
                                    real<lower=0> sigma;
                                    vector[T] h;                     // std log volatility time t
-                                   vector<lower=0>[T] l;
+                                   vector<lower=0, upper=1>[T] l;
                                    real<lower=-1,upper=1> b1;
                                    real b0;
                                    real b2;
@@ -38,7 +38,7 @@ model2 = stan_model( model_code = 'data{
                                    real<lower=-1,upper=1> phi;      // persistence of volatility
                                    real<lower=0> sigma;
                                    vector[T] h;                     // std log volatility time t
-                                   vector<lower=0>[T] l;
+                                   vector<lower=0, upper=1>[T] l;
                                    real<lower=-1,upper=1> b1;
                                    real b0;
                                    real b2;
@@ -66,7 +66,7 @@ model3 = stan_model( model_code = 'data{
                                    real<lower=-1,upper=1> phi;      // persistence of volatility
                                    real<lower=0> sigma;
                                    vector[T] h;                     // std log volatility time t
-                                   vector<lower=0>[T] l;
+                                   vector<lower=0, upper = 1>[T] l;
                                    real<lower=-1,upper=1> b1;
                                    real b0;
                                    real b2;
@@ -91,8 +91,8 @@ model3 = stan_model( model_code = 'data{
 x = estudo1( M = 500,
              warmup = 500,
              model1 = model1, model2 = model2, model3 = model3,
-             r = 10,
-             tails = c( 5, 10, 15, 20 ),
+             r = 200,
+             tails = c( 2, 6, 10, 14 ),
              mu = 1.0,
              phi = 0.985,
              sigma = 0.15,
