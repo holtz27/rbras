@@ -80,11 +80,9 @@ vgamma_estudo1 = function(M,
                       thin = 1,
                       chains = 4 )
       v3[ i ] = mean( extract( fit3 )$v )
-      
       cat( '\r' )
       
     }
-    
     vies = matrix( c(vies1 = mean( v1 - v ),
                      vies2 = mean( v2 - v ),
                      vies3 = mean( v3 - v )), ncol = 1 )
@@ -93,7 +91,6 @@ vgamma_estudo1 = function(M,
                      smse2 = mean( (v2 - v)**2 ),
                      smse3 = mean( (v3 - v)**2 )), ncol = 1)
     #smse = round( smse, digits = 3 )
-    
     if( v == tails[1] ){
       summary = data.frame(vies, smse)
       summary = rbind(c('v', v), summary)
@@ -102,14 +99,9 @@ vgamma_estudo1 = function(M,
       data = rbind(c('v', v), data)
       summary = cbind(summary, data)
     }
-    
-    
     if( v == tails[ length(tails) ] ) time.final = Sys.time()
-    
   } 
-  
   row.names( summary ) = c('','priori1', 'priori2','priori3' )
-  
   return( list(summary = summary, time = time.final - time.init) )
 }
 
