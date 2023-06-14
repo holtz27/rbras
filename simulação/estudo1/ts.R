@@ -88,9 +88,16 @@ model3 = stan_model( model_code = 'data{
                                    for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
                                  }' )
 
-x = estudo1( model1 = model1,
-             model2 = model2,
-             model3 = model3,
-             tails = c( 5, 10, 15 ),
-             r = 1 )
-
+x = estudo1( M = 500,
+             warmup = 500,
+             model1 = model1, model2 = model2, model3 = model3,
+             r = 10,
+             tails = c( 5, 10, 15, 20 ),
+             mu = 1.0,
+             phi = 0.985,
+             sigma = 0.15,
+             b0 = 0.2,
+             b1 = 0.03,
+             b2 = -0.05,
+             y0 = 0,
+             T = 2e3 )
