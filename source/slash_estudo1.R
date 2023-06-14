@@ -18,7 +18,6 @@ slash_estudo1 = function(M,
   for( v in tails ){
     if( v == tails[1] ) time.init = Sys.time()
     for( i in 1:r ){
-      
       cat( paste0('réplica ', i, ' com o parâmetro v = ', v ) )
       # Data generation
       data.gen = slash_data(mu = mu, phi = phi, sigma = sigma,
