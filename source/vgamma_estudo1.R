@@ -1,4 +1,4 @@
-estudo1 = function(M,
+vgamma_estudo1 = function(M,
                    warmup,
                    model1, model2, model3,
                    r,
