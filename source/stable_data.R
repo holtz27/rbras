@@ -1,13 +1,14 @@
 stable_data = function(mu, phi, sigma,
                        b0, b1, b2,
                        y0,
-                       a, #( log(v) )
+                       a, 
                        T,
-                       seed = 634323){
+                       seed = NULL){
   library( stabledist )
+  if( is.null( seed ) ) seed = sample(1:1e6, 1)
   # er
-  a = 1.85    # a e ( 0, 2 ] 
-  T = 2e3
+  #a = 1.85    # a e ( 0, 2 ] 
+  #T = 2e3
   y = h = rep(0, T)
   set.seed( seed )
   for(t in 1:T){
@@ -29,5 +30,5 @@ stable_data = function(mu, phi, sigma,
       )
     }
   }
-  return( y )
+  return( y = y, h = h, l = l )
 }
