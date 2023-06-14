@@ -88,7 +88,7 @@ model3 = stan_model( model_code = 'data{
                                    for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
                                  }' )
 
-x = estudo1( model1 = model1,
+x = vgamma_estudo1( model1 = model1,
              model2 = model2,
              model3 = model3,
              tails = c( 5, 10, 15 ),
