@@ -103,3 +103,9 @@ x = vgamma_estudo1( M = 500,
              b2 = -0.05,
              y0 = 0,
              T = 2e3 )
+save(x, file = 'vgamma_estudo1.RData')
+load(file = 'vgamma_estudo1.RData')
+
+y = x$summary
+y[2:4, ] = round( apply( x$summary[2:4, ], MARGIN = 2, as.numeric ), 3 )
+y
