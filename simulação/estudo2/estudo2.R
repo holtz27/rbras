@@ -329,11 +329,15 @@ for(i in 1:r){
   )
   
   df[[ i ]] = model_selection
-  if( i == r ) time.final = Sys.time()
+  if( i == r ){
+    time.final = Sys.time()
+    colnames(statistics) = c('média', 'sd', 'skewnwss', 'kurtosis', 'min', 'max')
+    time = time.final - time.init
+    save(df, time, statistics, file = 'estudo2.RData')
+  } 
   cat( '\r' )
 }
 
-colnames(statistics) = c('média', 'sd', 'skewnwss', 'kurtosis', 'min', 'max')
+#load('estudo2.RData')
 statistics
-time.final - time.init
 freq.models( df )
