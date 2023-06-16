@@ -4,7 +4,7 @@ stable_data = function(mu, phi, sigma,
                        a, #( log(v) )
                        T,
                        seed = NULL){
-  #library( stabledist )
+  library( stabledist )
   # er
   #a = 1.85    # a e ( 0, 2 ] 
   #T = 2e3
