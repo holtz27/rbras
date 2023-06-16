@@ -3,12 +3,13 @@ stable_data = function(mu, phi, sigma,
                        y0,
                        a, #( log(v) )
                        T,
-                       seed = 634323){
-  library( stabledist )
+                       seed = NULL){
+  #library( stabledist )
   # er
-  a = 1.85    # a e ( 0, 2 ] 
-  T = 2e3
+  #a = 1.85    # a e ( 0, 2 ] 
+  #T = 2e3
   y = h = rep(0, T)
+  if( is.null(seed) ) set.seed( sample(1:1e6,1) ) 
   set.seed( seed )
   for(t in 1:T){
     if(t == 1){
