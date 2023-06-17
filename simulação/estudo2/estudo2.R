@@ -258,7 +258,7 @@ set.seed( 753951 )
 seeds = sample(1:1e6, r)
 statistics = matrix(nrow = r, ncol = 6)
 M = 7.5e3
-
+alpha = 1.85
 for(i in 1:r){
   if( i == 1 ) time.init = Sys.time()
   
@@ -267,7 +267,7 @@ for(i in 1:r){
     y = stable_data(mu = -1, phi = 0.985, sigma = 0.15,
                     b0 = 0.01, b1 = 0.1, b2 = -0.02,
                     y0 = 0,
-                    a = 1.85, # a e ( 0, 2 ] 
+                    a = alpha, # alpha e ( 0, 2 ] 
                     T = 2e3,
                     seed = seeds[ i ])
     if( moments::kurtosis(y) < 30 ) break
