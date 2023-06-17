@@ -253,23 +253,26 @@ source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/data/stable
 source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/freq.models.R' )
 
 df = list()
-r = 2
-set.seed( 101 )
+r = 5
+set.seed( 753951 )
 seeds = sample(1:1e6, r)
 statistics = matrix(nrow = r, ncol = 6)
-#M = 7.5e1
-M = 50
+M = 7.5e3
 
 for(i in 1:r){
   if( i == 1 ) time.init = Sys.time()
   
   #data
-  y = stable_data(mu = -1, phi = 0.985, sigma = 0.15,
-                  b0 = 0.01, b1 = 0.01, b2 = -0.02,
-                  y0 = 0,
-                  a = 1.95, # a e ( 0, 2 ] 
-                  T = 2e3,
-                  seed = seeds[ i ])
+  repeat{
+    y = stable_data(mu = -1, phi = 0.985, sigma = 0.15,
+                    b0 = 0.01, b1 = 0.1, b2 = -0.02,
+                    y0 = 0,
+                    a = 1.85, # a e ( 0, 2 ] 
+                    T = 2e3,
+                    seed = seeds[ i ])
+    if( moments::kurtosis(y) < 30 ) break
+    else seeds[ i ] = sample( 1:1e6, 1 ) 
+  }
   statistics[i, ] = matrix(c(mean(y),                   #Média
                              sd(y),                     #Desvio padrão
                              moments::skewness(y),      #Assimetria
