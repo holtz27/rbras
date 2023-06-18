@@ -107,6 +107,6 @@ x = ts_estudo1( M = 500,
 save(x, file = 'ts_estudo1.RData')
 load(file = 'ts_estudo1.RData')
 
-y = x$summary
-y[2:4, ] = round( apply( x$summary[2:4, ], MARGIN = 2, as.numeric ), 3 )
-y
+summary = x$summary
+summary[2:4, ] = round( apply( x$summary[2:4, ], MARGIN = 2, as.numeric ), 3 )
+summary
