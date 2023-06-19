@@ -91,22 +91,44 @@ r = 200
 set.seed( 49 )
 seeds = sample(1:1e6, r)
 x = ts_estudo1( M = 500,
-             warmup = 500,
-             model1 = model1, model2 = model2, model3 = model3,
-             r = 200,
-             tails = c( 5, 10, 15, 20 ),
-             mu = 1.0,
-             phi = 0.985,
-             sigma = 0.15,
-             b0 = 0.2,
-             b1 = 0.03,
-             b2 = -0.05,
-             y0 = 0,
-             T = 2e3 )
+                warmup = 500,
+                model1 = model1, model2 = model2, model3 = model3,
+                r = 200,
+                tails = c( 5, 10, 15, 20 ),
+                mu = 1.0,
+                phi = 0.985,
+                sigma = 0.15,
+                b0 = 0.2,
+                b1 = 0.03,
+                b2 = -0.05,
+                y0 = 0,
+                T = 2e3 )
 
 save(x, file = 'ts_estudo1.RData')
 load(file = 'ts_estudo1.RData')
 
 summary = x$summary
-summary[2:4, ] = round( apply( x$summary[2:4, ], MARGIN = 2, as.numeric ), 3 )
+summary[2:4, ] = round( apply( x$summary[2:4, ], MARGIN = 2, as.numeric ), 5 )
 summary
+
+par(mfrow=c(3,1))
+boxplot(x$ess1[1, ], x$ess1[2, ], x$ess1[3, ], x$ess1[4, ], x$ess1[5, ],
+        names = c('v1','v2','v3','v4','v5'), main = 'priori1')
+
+boxplot(x$ess2[1, ], x$ess2[2, ], x$ess2[3, ], x$ess2[4, ], x$ess2[5, ],
+        names = c('v1','v2','v3','v4','v5'), main = 'priori2')
+
+boxplot(x$ess3[1, ], x$ess3[2, ], x$ess3[3, ], x$ess3[4, ], x$ess3[5, ],
+        names = c('v1','v2','v3','v4','v5'), main = 'priori3')
+par(mfrow=c(1,1))
+
+par(mfrow=c(3,1))
+boxplot(x$time1[1, ], x$time1[2, ], x$time1[3, ], x$time1[4, ], x$time1[5, ],
+        names = c('v1','v2','v3','v4','v5'), main = 'priori1')
+
+boxplot(x$time2[1, ], x$time2[2, ], x$time2[3, ], x$time2[4, ], x$time2[5, ],
+        names = c('v1','v2','v3','v4','v5'), main = 'priori2')
+
+boxplot(x$time3[1, ], x$time3[2, ], x$time3[3, ], x$time3[4, ], x$time3[5, ],
+        names = c('v1','v2','v3','v4','v5'), main = 'priori3')
+par(mfrow=c(1,1))
