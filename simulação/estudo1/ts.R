@@ -88,13 +88,13 @@ model3 = stan_model( model_code = 'data{
                                    for(t in 2:T) y[t] ~ normal( b0 + b1 * y[t-1] + b2 * exp(h[t]), exp( 0.5 * h[t] ) / sqrt( l[t] ) );
                                  }' )
 r = 200
-set.seed( 49 )
+set.seed( 159753 )
 seeds = sample(1:1e6, r)
 x = ts_estudo1( M = 500,
                 warmup = 500,
                 model1 = model1, model2 = model2, model3 = model3,
                 r = 200,
-                tails = c( 5, 10, 15, 20 ),
+                tails = c( 16, 18, 20, 22, 24 ),
                 mu = 1.0,
                 phi = 0.985,
                 sigma = 0.15,
@@ -102,7 +102,8 @@ x = ts_estudo1( M = 500,
                 b1 = 0.03,
                 b2 = -0.05,
                 y0 = 0,
-                T = 2e3 )
+                T = 2e3,
+                seeds = seeds)
 
 save(x, file = 'ts_estudo1.RData')
 load(file = 'ts_estudo1.RData')
