@@ -111,25 +111,34 @@ load(file = 'ts_estudo1.RData')
 summary = x$summary
 summary[2:4, ] = round( apply( x$summary[2:4, ], MARGIN = 2, as.numeric ), 5 )
 summary
+par(mfrow=c(2,3))
+boxplot(x$ess1[1, ] / x$time1[1, ], 
+        x$ess2[1, ] / x$time2[1, ], 
+        x$ess3[1, ] / x$time3[1, ], 
+        names = c('priori 1','priori 2','priori 3'), main = 'cenário 1',
+        ylab = 'ess / s')
 
-par(mfrow=c(3,1))
-boxplot(x$ess1[1, ], x$ess1[2, ], x$ess1[3, ], x$ess1[4, ], x$ess1[5, ],
-        names = c('v1','v2','v3','v4','v5'), main = 'priori1')
+boxplot(x$ess1[2, ] / x$time1[2, ], 
+        x$ess2[2, ] / x$time2[2, ], 
+        x$ess3[2, ] / x$time3[2, ], 
+        names = c('priori 1','priori 2','priori 3'), main = 'cenário 2',
+        ylab = 'ess / s')
 
-boxplot(x$ess2[1, ], x$ess2[2, ], x$ess2[3, ], x$ess2[4, ], x$ess2[5, ],
-        names = c('v1','v2','v3','v4','v5'), main = 'priori2')
+boxplot(x$ess1[3, ] / x$time1[3, ], 
+        x$ess2[3, ] / x$time2[3, ], 
+        x$ess3[3, ] / x$time3[3, ], 
+        names = c('priori 1','priori 2','priori 3'), main = 'cenário 3',
+        ylab = 'ess / s')
 
-boxplot(x$ess3[1, ], x$ess3[2, ], x$ess3[3, ], x$ess3[4, ], x$ess3[5, ],
-        names = c('v1','v2','v3','v4','v5'), main = 'priori3')
-par(mfrow=c(1,1))
+boxplot(x$ess1[4, ] / x$time1[4, ], 
+        x$ess2[4, ] / x$time2[4, ], 
+        x$ess3[4, ] / x$time3[4, ], 
+        names = c('priori 1','priori 2','priori 3'), main = 'cenário 4',
+        ylab = 'ess / s')
 
-par(mfrow=c(3,1))
-boxplot(x$time1[1, ], x$time1[2, ], x$time1[3, ], x$time1[4, ], x$time1[5, ],
-        names = c('v1','v2','v3','v4','v5'), main = 'priori1')
-
-boxplot(x$time2[1, ], x$time2[2, ], x$time2[3, ], x$time2[4, ], x$time2[5, ],
-        names = c('v1','v2','v3','v4','v5'), main = 'priori2')
-
-boxplot(x$time3[1, ], x$time3[2, ], x$time3[3, ], x$time3[4, ], x$time3[5, ],
-        names = c('v1','v2','v3','v4','v5'), main = 'priori3')
+boxplot(x$ess1[5, ] / x$time1[5, ], 
+        x$ess2[5, ] / x$time2[5, ], 
+        x$ess3[5, ] / x$time3[5, ], 
+        names = c('priori 1','priori 2','priori 3'), main = 'cenário 5',
+        ylab = 'ess / s')
 par(mfrow=c(1,1))
