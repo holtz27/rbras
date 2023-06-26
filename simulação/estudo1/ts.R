@@ -93,7 +93,7 @@ seeds = sample(1:1e6, r)
 x = ts_estudo1( M = 500,
                 warmup = 500,
                 model1 = model1, model2 = model2, model3 = model3,
-                r = 200,
+                r = r,
                 tails = c( 16, 18, 20, 22, 24 ),
                 mu = 1.0,
                 phi = 0.985,
