@@ -13,12 +13,12 @@ trace_plots = function(draws, names){
   par(mfrow = c(1,1))
 }
 
-abs_plots = function( draws_h, draws_l, y ){
+abs_plots = function( draws_h, y ){
   library(ggplot2)
   T = length( y )
-  e.vol_hat = apply( exp( draws_h ) * draws_l, MARGIN = 1, FUN = mean )
-  e.vol_min = apply( exp( draws_h ) * draws_l, MARGIN = 1, FUN = quantile, probs = c(0.025) )
-  e.vol_max = apply( exp( draws_h ) * draws_l, MARGIN = 1, FUN = quantile, probs = c(0.975) )
+  e.vol_hat = apply( exp( draws_h ) , MARGIN = 1, FUN = mean )
+  e.vol_min = apply( exp( draws_h ) , MARGIN = 1, FUN = quantile, probs = c(0.025) )
+  e.vol_max = apply( exp( draws_h ) , MARGIN = 1, FUN = quantile, probs = c(0.975) )
   data = matrix(c(1:T, abs( y ), e.vol_hat, e.vol_min, e.vol_max), ncol = 5)
   data = data.frame(data)
   names(data) = c('obs', 'y.abs', 'e.hat', 'e.min','e.max')
