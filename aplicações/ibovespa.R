@@ -96,8 +96,8 @@ ts_fit = stan_model( model_code = 'data{
                                         real<lower=0> s2;
                                         vector[T] h_std;  // std log volatility time t
                                         vector<lower=0>[T] l;
-                                        real<lower=0.02,upper=0.5> lambda;
-                                        real<lower=2> v; 
+                                        real<lower=0.025,upper=0.5> lambda;
+                                        real<lower=2, upper=40> v; 
                                         real<lower=-1,upper=1> b1T;
                                         real b0;
                                         real b2;
@@ -135,7 +135,7 @@ ts_fit = stan_model( model_code = 'data{
                                         b2 ~ normal(0, 3.2);
                                         s2 ~ inv_gamma(2.5, 0.025);
                                         //priori 3
-                                        lambda ~ uniform(0.02, 0.5);
+                                        lambda ~ uniform(0.025, 0.5);
                                         v ~ exponential( lambda );
                                         
                                         //--- Sampling volatilitys:
@@ -220,8 +220,8 @@ vgama_fit = stan_model( model_code = 'data{
                                           real<lower=0> s2;
                                           vector[T] h_std;  // std log volatility time t
                                           vector<lower=0> [T] l;
-                                          real<lower=0.02,upper=0.5> lambda;
-                                          real<lower=0> v; 
+                                          real<lower=0.025,upper=2> lambda;
+                                          real<lower=0, upper=40> v; 
                                           real<lower=-1,upper=1> b1T;
                                           real b0;
                                           real b2;
@@ -259,7 +259,7 @@ vgama_fit = stan_model( model_code = 'data{
                                           b2 ~ normal(0, 3.2);
                                           s2 ~ inv_gamma(2.5, 0.025);
                                           //priori 3
-                                          lambda ~ uniform(0.02, 0.5);
+                                          lambda ~ uniform(0.025, 2);
                                           v ~ exponential( lambda );
                                           
                                           //--- Sampling volatilitys:
