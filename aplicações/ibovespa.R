@@ -275,8 +275,10 @@ vgama_fit = stan_model( model_code = 'data{
                                         }
                                         ' )
 ################################################################################
+source('https://raw.githubusercontent.com/holtz27/rbras/main/source/figures.R')
+source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/model_selection.R' )
 
-N = 4e3
+N = 4e3/4
 warmup = 1e4
 
 fit0 = sampling(normal_fit, 
@@ -286,38 +288,45 @@ fit0 = sampling(normal_fit,
                 iter = warmup + N,
                 warmup = warmup,
                 chains = 4)
-save(fit0, file = '~/rstan/Aplicação/fit0.RData')
-load('~/rstan/Aplicação/fit0.RData')
+#save(fit0, file = '~/rstan/Aplicação/fit0.RData')
+#load('~/rstan/Aplicação/fit0.RData')
 
 parameter = extract( fit0 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+x = summary(fit0)
+Y = x$summary
+#------------------ Tratando Y
+Y = data.frame(Y, row.names = row.names(Y))
+#------------------ Avaliando convergência
+rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2')
+cols = c('mean', 'sd', 'X2.5.', 'X97.5.', 'n_eff','Rhat')
+summary = Y[rows, cols]
+summary
+# h
+rhat_h = Y[stringr::str_detect(row.names(Y), pattern = '^h') & 
+             stringr::str_detect(row.names(Y), pattern = '_', negate = TRUE),][, 'Rhat']
+plot(rhat_h, main = 'h')
+abline(h = 0.95)
+abline(h = 1)
+abline(h = 1.05)
+# Theta draws
+draws = matrix(c( parameter$mu,
+                  parameter$phi,
+                  parameter$sigma,
+                  parameter$b0, 
+                  parameter$b1, 
+                  parameter$b2 ), nrow = 6, byrow = TRUE)
+draws = rbind( draws, t( as.matrix( parameter$h ) ) )
+draws = rbind( draws, matrix(1, nrow = T, ncol = length(parameter$mu)) )
+# plots
+trace_plots(draws[1:6, ], names = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2') )
+abs_plots(draws[7:(T+6), ], log.ret)
+# model selection
+normal_dic = svmsmn_dic(data = log.ret, y0 = 0, 
+                        param_draws = draws[4:(nrow(draws)), ])
+############### waic
+normal_waic = svmsmn_waic(data = log.ret, y0 = 0,
+                          draws = draws[4:(nrow(draws)), ])
+############### loo
+normal_loo = svmsmn_loo(data = log.ret, y0 = 0, 
+                        draws = draws[4:(nrow(draws)), ],
+                        cores = 4)
