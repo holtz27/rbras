@@ -328,6 +328,7 @@ abs_plots(draws[8:(T+6), ], log.ret)
 # data = ( y0 , y )
 # param_hat = ( b = b_hat, h = h_hat, l = l_hat )
 ################################################################################
+############### dic
 normal_dic = svmsmn_dic(data = log.ret, y0 = 0, 
                         param_draws = draws[4:(nrow(draws)), ])
 ############### waic
@@ -392,7 +393,7 @@ abs_plots(draws[9:(T+7), ],  log.ret)
 # data = ( y0 , y )
 # param_hat = ( b = b_hat, h = h_hat, l = l_hat )
 ################################################################################
-############### DIC
+############### dic
 ts_dic = svmsmn_dic(data = log.ret, y0 = 0, 
                     param_draws = draws[ c( 4:6, 
                                             8:(T+7),
@@ -466,7 +467,7 @@ abs_plots(draws[9:(T+7), ],  log.ret)
 # data = ( y0 , y )
 # param_hat = ( b = b_hat, h = h_hat, l = l_hat )
 ################################################################################
-############### DIC
+############### dic
 slash_dic = svmsmn_dic(data = log.ret, y0 = 0, 
                     param_draws = draws[ c( 4:6, 
                                             8:(T+7),
@@ -539,7 +540,7 @@ abs_plots(draws[9:(T+7), ],  log.ret)
 # data = ( y0 , y )
 # param_hat = ( b = b_hat, h = h_hat, l = l_hat )
 ################################################################################
-############### DIC
+############### dic
 vgamma_dic = svmsmn_dic(data = log.ret, y0 = 0, 
                     param_draws = draws[ c( 4:6, 
                                             8:(T+7),
@@ -557,30 +558,3 @@ vgamma_loo = svmsmn_loo(data = log.ret, y0 = 0,
                                       8:(T+7),
                                       (T+8):(nrow(draws)) ), ]
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
