@@ -11,14 +11,14 @@ dates = as.Date( ibovespa[, 1] )
 
 plot( log.ret ~ dates[-1], type = 'l' )
 
-summary = matrix(c( mean( log.ret ),
-                    sd( log.ret ),
-                    min( log.ret ),
-                    max( log.ret ),
-                    moments::skewness( log.ret ),
-                    moments::kurtosis( log.ret ) ), nrow = 1)
-colnames( summary ) = c( 'mean', 'sd', 'min', 'max', 'skewness', 'kurtosis')
-summary
+data_summary = matrix(c( mean( log.ret ),
+                         sd( log.ret ),
+                         min( log.ret ),
+                         max( log.ret ),
+                         moments::skewness( log.ret ),
+                         moments::kurtosis( log.ret ) ), nrow = 1)
+colnames( data_summary ) = c( 'mean', 'sd', 'min', 'max', 'skewness', 'kurtosis')
+data_summary
 
 Box.test(log.ret, lag = 12, type = 'Ljung-Box')
 Box.test(log.ret**2, lag = 12, type = 'Ljung-Box')
@@ -82,7 +82,6 @@ normal_fit = stan_model( model_code = 'data{
                                               y ~ normal( mu_t, exp(h/2) );
                                             }
                                             ' )
-
 # ts
 ts_fit = stan_model( model_code = 'data{
                                         int<lower=0> T;
