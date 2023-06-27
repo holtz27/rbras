@@ -1,4 +1,4 @@
-
+# Reading data
 ibovespa = read.csv('https://raw.githubusercontent.com/holtz27/rbras/main/aplica%C3%A7%C3%B5es/%5EBVSP.csv')
 ibovespa = ibovespa[, c('Date', 'Close')]
 ibovespa[, 2] = as.numeric( ibovespa[, 2] ) 
