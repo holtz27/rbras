@@ -26,7 +26,7 @@ Box.test(log.ret**2, lag = 12, type = 'Ljung-Box')
 acf(log.ret, lag.max = 5, plot = FALSE)
 ################################################################################
 library(rstan)
-options( mc.cores = 4 )
+options( mc.cores = 1 )
 ################################################################################
 # stan models
 normal_fit = stan_model( model_code = 'data{
@@ -96,7 +96,7 @@ ts_fit = stan_model( model_code = 'data{
                                         real<lower=0> s2;
                                         vector[T] h_std;  // std log volatility time t
                                         vector<lower=0>[T] l;
-                                        real<lower=0.025,upper=0.5> lambda;
+                                        //real<lower=0.025,upper=0.5> lambda;
                                         real<lower=2, upper=40> v; 
                                         real<lower=-1,upper=1> b1T;
                                         real b0;
@@ -135,9 +135,10 @@ ts_fit = stan_model( model_code = 'data{
                                         b2 ~ normal(0, 3.2);
                                         s2 ~ inv_gamma(2.5, 0.025);
                                         //priori 3
-                                        lambda ~ uniform(0.025, 0.5);
-                                        v ~ exponential( lambda );
-                                        
+                                        //lambda ~ uniform(0.025, 0.5);
+                                        //v ~ exponential( lambda );
+                                        v ~ gamma(2, 0.10);
+
                                         //--- Sampling volatilitys:
                                         h_std ~ std_normal();
                                         for(t in 1:T) l[t] ~ gamma(0.5 * v, 0.5 * v);
@@ -220,7 +221,7 @@ vgama_fit = stan_model( model_code = 'data{
                                           real<lower=0> s2;
                                           vector[T] h_std;  // std log volatility time t
                                           vector<lower=0> [T] l;
-                                          real<lower=0.025,upper=2> lambda;
+                                          //real<lower=0.025,upper=2> lambda;
                                           real<lower=0, upper=40> v; 
                                           real<lower=-1,upper=1> b1T;
                                           real b0;
@@ -259,8 +260,9 @@ vgama_fit = stan_model( model_code = 'data{
                                           b2 ~ normal(0, 3.2);
                                           s2 ~ inv_gamma(2.5, 0.025);
                                           //priori 3
-                                          lambda ~ uniform(0.025, 2);
-                                          v ~ exponential( lambda );
+                                          //lambda ~ uniform(0.025, 2);
+                                          //v ~ exponential( lambda );
+                                          v ~ gamma(0.08, 0.04);
                                           
                                           //--- Sampling volatilitys:
                                           h_std ~ std_normal();
@@ -274,8 +276,8 @@ vgama_fit = stan_model( model_code = 'data{
 ################################################################################
 source('https://raw.githubusercontent.com/holtz27/rbras/main/source/figures.R')
 source('https://raw.githubusercontent.com/holtz27/rbras/main/source/model_selection.R')
-N = 4e3 / 4
-warmup = 2e4
+#N = 4e3 / 4
+#warmup = 2e4
 #fit0 = sampling(normal_fit, 
 #                list(T = length( log.ret ), 
 #                     y = log.ret,
@@ -327,13 +329,15 @@ warmup = 2e4
 ####################################
 ####################################
 ####################### ts
+N = 4e4
+warmup = 2e4
 fit1 = sampling(ts_fit, 
                 list(T = length( log.ret ), 
                      y = log.ret,
                      y0 = 0),
                 iter = warmup + N,
                 warmup = warmup,
-                chains = 4)
+                chains = 1)
 #save(fit0, file = '~/rstan/Aplicação/fit0.RData')
 #load('~/rstan/Aplicação/fit0.RData')
 parameters = extract( fit1 )
@@ -343,22 +347,9 @@ Y = x$summary
 Y = data.frame(Y, row.names = row.names(Y))
 #------------------ Avaliando convergência
 rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v')
-cols = c('mean', 'sd', 'X2.5.', 'X97.5.', 'n_eff','Rhat')
+cols = c('mean', 'sd', 'X2.5.', 'X50.','X97.5.')
 summary = Y[rows, cols]
 summary
-# h
-rhat_h = Y[stringr::str_detect(row.names(Y), pattern = '^h') & 
-             stringr::str_detect(row.names(Y), pattern = '_', negate = TRUE),][, 'Rhat']
-plot(rhat_h, main = 'h')
-abline(h = 0.95)
-abline(h = 1)
-abline(h = 1.05)
-# l
-rhat_l = Y[stringr::str_detect(row.names(Y), pattern = '^l'),][, 'Rhat']
-plot(rhat_l, main = 'l')
-abline(h = 0.95)
-abline(h = 1)
-abline(h = 1.05)
 # Theta draws
 draws = matrix(c( parameters$mu,
                   parameters$phi,
@@ -369,6 +360,18 @@ draws = matrix(c( parameters$mu,
                   parameters$v), nrow = 7, byrow = TRUE)
 draws = rbind( draws, t( as.matrix( parameters$h ) ) )
 draws = rbind( draws, t( as.matrix( parameters$l ) ) )
+############### Numeric Analysis
+############################### theta
+mcmc = coda::as.mcmc( t( draws[1:7, ] ) )
+####### Geweke Statistic
+# |G| > 1.96 evidencia não convergencia
+CD_theta = coda::geweke.diag( mcmc )
+CD_theta
+####### Fator de ineficiência (IF)
+# IF = N / N_eff, onde N_eff = effective Sample Size
+# Se IF >> 1, indica uma má mistura da cadeia gerada
+N_eff_theta = coda::effectiveSize( mcmc )
+N_eff_theta
 trace_plots(draws[1:7, ], 
             names = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v') )
 abs_plots(draws[8:(T+7), ],  log.ret)
