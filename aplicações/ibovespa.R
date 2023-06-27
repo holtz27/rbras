@@ -274,60 +274,68 @@ vgama_fit = stan_model( model_code = 'data{
 ################################################################################
 source('https://raw.githubusercontent.com/holtz27/rbras/main/source/figures.R')
 source('https://raw.githubusercontent.com/holtz27/rbras/main/source/model_selection.R')
-#N = 4e3 / 4
-#warmup = 2e4
-#fit0 = sampling(normal_fit, 
-#                list(T = length( log.ret ), 
-#                     y = log.ret,
-#                     y0 = 0),
-#                iter = warmup + N,
-#                warmup = warmup,
-#                chains = 4)
+####################################
+####################################
+####################### normal
+N = 4e3
+warmup = 2e4
+fit0 = sampling(normal_fit, 
+                list(T = length( log.ret ), 
+                     y = log.ret,
+                     y0 = 0),
+                iter = warmup + N,
+                warmup = warmup,
+                chains = 1)
 #save(fit0, file = '~/rstan/Aplicação/fit0.RData')
 #load('~/rstan/Aplicação/fit0.RData')
-#parameters = extract( fit0 )
-#x = summary(fit0)
-#Y = x$summary
+parameters = extract( fit0 )
+x = summary( fit0 )
+Y = x$summary
 #------------------ Tratando Y
 #Y = data.frame(Y, row.names = row.names(Y))
 #------------------ Avaliando convergência
-#rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2')
-#cols = c('mean', 'sd', 'X2.5.', 'X97.5.', 'n_eff','Rhat')
-#summary = Y[rows, cols]
-#summary
-# h
-#rhat_h = Y[stringr::str_detect(row.names(Y), pattern = '^h') & 
-#             stringr::str_detect(row.names(Y), pattern = '_', negate = TRUE),][, 'Rhat']
-#plot(rhat_h, main = 'h')
-#abline(h = 0.95)
-#abline(h = 1)
-#abline(h = 1.05)
+rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2')
+cols = c('mean', 'sd', 'X2.5.', 'X97.5.')
+summary = Y[rows, cols]
+summary
 # Theta draws
-#draws = matrix(c( parameters$mu,
-#                  parameters$phi,
-#                  parameters$sigma,
-#                  parameters$b0, 
-#                  parameters$b1, 
-#                  parameters$b2 ), nrow = 6, byrow = TRUE)
-#draws = rbind( draws, t( as.matrix( parameters$h ) ) )
-#draws = rbind( draws, matrix(1, nrow = T, ncol = length(parameters$mu)) )
+draws = matrix(c( parameters$mu,
+                  parameters$phi,
+                  parameters$sigma,
+                  parameters$b0, 
+                  parameters$b1, 
+                  parameters$b2 ), nrow = 6, byrow = TRUE)
+draws = rbind( draws, t( as.matrix( parameters$h ) ) )
+draws = rbind( draws, matrix(1, nrow = T, ncol = length(parameters$mu)) )
+############### Numeric Analysis
+############################### theta
+mcmc = coda::as.mcmc( t( draws[1:7, ] ) )
+####### Geweke Statistic
+# |G| > 1.96 evidencia não convergencia
+CD_theta = coda::geweke.diag( mcmc )
+CD_theta
+####### Fator de ineficiência (IF)
+# IF = N / N_eff, onde N_eff = effective Sample Size
+# Se IF >> 1, indica uma má mistura da cadeia gerada
+N_eff_theta = coda::effectiveSize( mcmc )
+M / N_eff_theta
 # plots
-#trace_plots(draws[1:6, ], names = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2') )
-#abs_plots(draws[7:(T+6), ], log.ret)
+trace_plots(draws[1:6, ], names = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2') )
+abs_plots(draws[8:(T+6), ], log.ret)
 # model selection
-#normal_dic = svmsmn_dic(data = log.ret, y0 = 0, 
-#                        param_draws = draws[4:(nrow(draws)), ])
+normal_dic = svmsmn_dic(data = log.ret, y0 = 0, 
+                        param_draws = draws[4:(nrow(draws)), ])
 ############### waic
-#normal_waic = svmsmn_waic(data = log.ret, y0 = 0,
-#                          draws = draws[4:(nrow(draws)), ])
+normal_waic = svmsmn_waic(data = log.ret, y0 = 0,
+                          draws = draws[4:(nrow(draws)), ])
 ############### loo
-#normal_loo = svmsmn_loo(data = log.ret, y0 = 0, 
-#                        draws = draws[4:(nrow(draws)), ],
-#                        cores = 4)
+normal_loo = svmsmn_loo(data = log.ret, y0 = 0, 
+                        draws = draws[4:(nrow(draws)), ],
+                        cores = 4)
 ####################################
 ####################################
 ####################### ts
-N = 4e4
+N = 4e3
 warmup = 2e4
 fit1 = sampling(ts_fit, 
                 list(T = length( log.ret ), 
@@ -369,10 +377,10 @@ CD_theta
 # IF = N / N_eff, onde N_eff = effective Sample Size
 # Se IF >> 1, indica uma má mistura da cadeia gerada
 N_eff_theta = coda::effectiveSize( mcmc )
-N_eff_theta
+M / N_eff_theta
 trace_plots(draws[1:7, ], 
             names = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v') )
-abs_plots(draws[8:(T+7), ],  log.ret)
+abs_plots(draws[9:(T+7), ],  log.ret)
 ################################################################################
 ############################## Model Selection
 # p( y | theta ) = p( y | b, theta_h, v, h ) = p( y | b, h )
@@ -397,7 +405,80 @@ ts_loo = svmsmn_loo(data = log.ret, y0 = 0,
                                       8:(T+7),
                                       (T+8):(nrow(draws)) ), ]
 )
-
+####################################
+####################################
+####################### slash
+N = 4e3
+warmup = 2e4
+fit2 = sampling(slash_fit, 
+                list(T = length( log.ret ), 
+                     y = log.ret,
+                     y0 = 0),
+                iter = warmup + N,
+                warmup = warmup,
+                chains = 1)
+#save(fit2, file = 'fit2.RData')
+#load('fit2.RData')
+parameters = extract( fit2 )
+x = summary( fit2 )
+Y = x$summary
+#------------------ Tratando Y
+Y = data.frame(Y, row.names = row.names(Y))
+#------------------ Avaliando convergência
+rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v')
+cols = c('mean', 'sd', 'X2.5.', 'X50.','X97.5.')
+summary = Y[rows, cols]
+summary
+# Theta draws
+draws = matrix(c( parameters$mu,
+                  parameters$phi,
+                  parameters$sigma,
+                  parameters$b0, 
+                  parameters$b1, 
+                  parameters$b2,
+                  parameters$v), nrow = 7, byrow = TRUE)
+draws = rbind( draws, t( as.matrix( parameters$h ) ) )
+draws = rbind( draws, t( as.matrix( parameters$l ) ) )
+draws = draws[, seq(1, 4e4, 10)]
+############### Numeric Analysis
+############################### theta
+mcmc = coda::as.mcmc( t( draws[1:7, ] ) )
+####### Geweke Statistic
+# |G| > 1.96 evidencia não convergencia
+CD_theta = coda::geweke.diag( mcmc )
+CD_theta
+####### Fator de ineficiência (IF)
+# IF = N / N_eff, onde N_eff = effective Sample Size
+# Se IF >> 1, indica uma má mistura da cadeia gerada
+N_eff_theta = coda::effectiveSize( mcmc )
+M / N_eff_theta
+trace_plots(draws[1:7, ], 
+            names = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v') )
+abs_plots(draws[9:(T+7), ],  log.ret)
+################################################################################
+############################## Model Selection
+# p( y | theta ) = p( y | b, theta_h, v, h ) = p( y | b, h )
+# data = ( y0 , y )
+# param_hat = ( b = b_hat, h = h_hat, l = l_hat )
+################################################################################
+############### DIC
+slash_dic = svmsmn_dic(data = log.ret, y0 = 0, 
+                    param_draws = draws[ c( 4:6, 
+                                            8:(T+7),
+                                            (T+8):(nrow(draws)) ), ]
+)
+############### waic
+slash_waic = svmsmn_waic(data = log.ret, y0 = 0,
+                      draws = draws[ c( 4:6, 
+                                        8:(T+7),
+                                        (T+8):(nrow(draws)) ), ]
+)
+############### loo
+slash_loo = svmsmn_loo(data = log.ret, y0 = 0, 
+                    draws = draws[ c( 4:6, 
+                                      8:(T+7),
+                                      (T+8):(nrow(draws)) ), ]
+)
 
 
 
