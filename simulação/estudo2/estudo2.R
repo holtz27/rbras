@@ -349,6 +349,5 @@ cenario1 = list(time = time,
                 df = df)
 #save(cenario1, file = 'cenario1.RData')
 #load('cenario1.RData')
-
 df = cenario1$df
 freq.models( df )
