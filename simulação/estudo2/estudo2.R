@@ -252,13 +252,14 @@ source( 'https://raw.githubusercontent.com/holtz27/rbras/main/source/freq.models
 options( mc.cores = 1 )
 
 df = list()
-r = 2
+r = 30
 set.seed( 753951 )
 seeds = sample(1:1e6, r)
 statistics = matrix(nrow = r, ncol = 6)
 M = 2e3
-warmup = 2e4
-alpha = 1.995
+warmup = 2e3
+alpha = 1.85
+T = 1e3
 for(i in 1:r){
   if( i == 1 ) time.init = Sys.time()
   #data
@@ -267,7 +268,7 @@ for(i in 1:r){
                     b0 = 0.01, b1 = 0.1, b2 = -0.02,
                     y0 = 0,
                     a = alpha, # alpha e ( 0, 2 ] 
-                    T = 5e2,
+                    T = T,
                     seed = seeds[ i ])
     if( moments::kurtosis(y) < 20 ) break
     else seeds[ i ] = sample( 1:1e6, 1 ) 
@@ -343,6 +344,11 @@ for(i in 1:r){
   cat( '\r' )
 }
 
-#load('estudo2.RData')
-statistics
+cenario1 = list(time = time,
+                statistics = statistics,
+                df = df)
+#save(cenario1, file = 'cenario1.RData')
+#load('cenario1.RData')
+
+df = cenario1$df
 freq.models( df )
