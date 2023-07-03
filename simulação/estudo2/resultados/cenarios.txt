@@ -1,0 +1,23 @@
+- cenario1:
+a = 1.85
+T = 1e3			
+   M = 2e3		   		
+   warmup = 2e3		   
+
+- cenario2:
+a = 1.85
+T = 2e3			
+   M = 2e3		   	
+   warmup = 2e3		  
+
+- cenario3:
+a = 1.995
+T = 1e3			
+   M = 2e3		  
+   warmup = 2e3		  
+
+- cenario4:
+a = 1.995
+T = 2e3			
+   M = 2e3		    		
+   warmup = 2e4		  
