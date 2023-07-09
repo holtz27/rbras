@@ -4,7 +4,7 @@ freq.models = function( M ){
   
   for( i in 1:length(M) ){
     
-    if( (sum( df[[i]]$convergence ) == 4) && (!is.na(sum( df[[i]]$convergence ))) ){
+    if( sum( df[[i]]$convergence ) == 4 ){
       
       convergence = convergence + 1
       
