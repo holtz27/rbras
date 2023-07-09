@@ -9,7 +9,22 @@ T = nrow(ibovespa)
 log.ret = 100 * ( log( ibovespa[2:T, 2] ) - log( ibovespa[1:(T-1), 2] ) ) 
 dates = as.Date( ibovespa[, 1] )
 
-plot( log.ret ~ dates[-1], type = 'l' )
+# Plots
+library(ggplot2)
+df = data.frame( Retorno = log.ret, Tempo = dates[-1] )
+
+g = ggplot(df) + geom_line(aes(x = Tempo, y = Retorno))
+g = g + scale_x_date(date_breaks = "45 month", date_labels =  "%d %b %Y")
+g = g + theme_test()
+#g
+
+h = ggplot( df, aes(Retorno) )
+h = h + geom_histogram(aes(y = after_stat(density)), bins = 40, color = 'white')
+h = h + theme_test() + ylab('')
+#h
+
+gridExtra::grid.arrange(g, h, nrow = 1, ncol = 2) 
+
 
 data_summary = matrix(c( mean( log.ret ),
                          sd( log.ret ),
@@ -18,11 +33,13 @@ data_summary = matrix(c( mean( log.ret ),
                          moments::skewness( log.ret ),
                          moments::kurtosis( log.ret ) ), nrow = 1)
 colnames( data_summary ) = c( 'mean', 'sd', 'min', 'max', 'skewness', 'kurtosis')
-data_summary
+round( data_summary, digits = 2 )
 
 Box.test(log.ret, lag = 12, type = 'Ljung-Box')
 Box.test(log.ret**2, lag = 12, type = 'Ljung-Box')
 acf(log.ret, lag.max = 5, plot = FALSE)
+
+
 ################################################################################
 library(rstan)
 options( mc.cores = 1 )
@@ -208,7 +225,7 @@ slash_fit = stan_model( model_code = 'data{
                                         }
                                         ' )
 # vgamma
-vgamma_fit = stan_model( model_code = 'data{
+vgama_fit = stan_model( model_code = 'data{
                                           int<lower=0> T;
                                           real y0;
                                           vector[T] y;
@@ -287,7 +304,7 @@ fit0 = sampling(normal_fit,
                 warmup = warmup,
                 chains = 1)
 #save(fit0, file = '~/rstan/Aplicação/fit0.RData')
-#load('~/rstan/Aplicação/fit0.RData')
+load('~/rstan/Aplicação/fit0.RData')
 parameters = extract( fit0 )
 x = summary( fit0 )
 Y = x$summary
@@ -295,9 +312,9 @@ Y = x$summary
 #Y = data.frame(Y, row.names = row.names(Y))
 #------------------ Avaliando convergência
 rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2')
-cols = c('mean', 'sd', 'X2.5.', 'X97.5.')
+cols = c('mean', 'sd', '2.5%', '97.5%')
 summary = Y[rows, cols]
-summary
+round( summary, digits = 3 )
 # Theta draws
 draws = matrix(c( parameters$mu,
                   parameters$phi,
@@ -351,7 +368,7 @@ fit1 = sampling(ts_fit,
                 warmup = warmup,
                 chains = 1)
 #save(fit0, file = '~/rstan/Aplicação/fit0.RData')
-#load('~/rstan/Aplicação/fit0.RData')
+load('~/rstan/Aplicação/fit1.RData')
 parameters = extract( fit1 )
 x = summary(fit1)
 Y = x$summary
@@ -361,7 +378,7 @@ Y = data.frame(Y, row.names = row.names(Y))
 rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v')
 cols = c('mean', 'sd', 'X2.5.', 'X50.','X97.5.')
 summary = Y[rows, cols]
-summary
+round( summary, digits = 3 )
 # Theta draws
 draws = matrix(c( parameters$mu,
                   parameters$phi,
@@ -424,7 +441,7 @@ fit2 = sampling(slash_fit,
                 warmup = warmup,
                 chains = 1)
 #save(fit2, file = 'fit2.RData')
-#load('fit2.RData')
+load('fit2.RData')
 parameters = extract( fit2 )
 x = summary( fit2 )
 Y = x$summary
@@ -432,9 +449,9 @@ Y = x$summary
 Y = data.frame(Y, row.names = row.names(Y))
 #------------------ Avaliando convergência
 rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v')
-cols = c('mean', 'sd', 'X2.5.', 'X50.','X97.5.')
+cols = c('mean', 'X2.5.', 'X97.5.')
 summary = Y[rows, cols]
-summary
+round( summary, digits = 3 )
 # Theta draws
 draws = matrix(c( parameters$mu,
                   parameters$phi,
@@ -445,7 +462,7 @@ draws = matrix(c( parameters$mu,
                   parameters$v), nrow = 7, byrow = TRUE)
 draws = rbind( draws, t( as.matrix( parameters$h ) ) )
 draws = rbind( draws, t( as.matrix( parameters$l ) ) )
-draws = draws[, seq(1, 4e4, 10)]
+#draws = draws[, seq(1, 4e4, 10)]
 ############### Numeric Analysis
 ############################### theta
 mcmc = coda::as.mcmc( t( draws[1:7, ] ) )
@@ -457,7 +474,7 @@ CD_theta
 # IF = N / N_eff, onde N_eff = effective Sample Size
 # Se IF >> 1, indica uma má mistura da cadeia gerada
 N_eff_theta = coda::effectiveSize( mcmc )
-M / N_eff_theta
+N / N_eff_theta
 trace_plots(draws[1:7, ], 
             names = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v') )
 abs_plots(draws[9:(T+7), ],  log.ret)
@@ -469,21 +486,21 @@ abs_plots(draws[9:(T+7), ],  log.ret)
 ################################################################################
 ############### dic
 slash_dic = svmsmn_dic(data = log.ret, y0 = 0, 
-                    param_draws = draws[ c( 4:6, 
-                                            8:(T+7),
-                                            (T+8):(nrow(draws)) ), ]
+                       param_draws = draws[ c( 4:6, 
+                                               8:(T+7),
+                                               (T+8):(nrow(draws)) ), ]
 )
 ############### waic
 slash_waic = svmsmn_waic(data = log.ret, y0 = 0,
-                      draws = draws[ c( 4:6, 
-                                        8:(T+7),
-                                        (T+8):(nrow(draws)) ), ]
+                         draws = draws[ c( 4:6, 
+                                           8:(T+7),
+                                           (T+8):(nrow(draws)) ), ]
 )
 ############### loo
 slash_loo = svmsmn_loo(data = log.ret, y0 = 0, 
-                    draws = draws[ c( 4:6, 
-                                      8:(T+7),
-                                      (T+8):(nrow(draws)) ), ]
+                       draws = draws[ c( 4:6, 
+                                         8:(T+7),
+                                         (T+8):(nrow(draws)) ), ]
 )
 ####################################
 ####################################
@@ -497,8 +514,8 @@ fit3 = sampling(vgamma_fit,
                 iter = warmup + N,
                 warmup = warmup,
                 chains = 1)
-save(fit3, file = '~/rstan/Aplicação/fit3.RData')
-#load('~/rstan/Aplicação/fit3.RData')
+#save(fit3, file = '~/rstan/Aplicação/fit3.RData')
+load('~/rstan/Aplicação/fit3.RData')
 parameters = extract( fit3 )
 x = summary( fit3 )
 Y = x$summary
@@ -506,9 +523,9 @@ Y = x$summary
 Y = data.frame(Y, row.names = row.names(Y))
 #------------------ Avaliando convergência
 rows = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v')
-cols = c('mean', 'sd', 'X2.5.', 'X50.','X97.5.')
+cols = c('mean', 'X2.5.', 'X97.5.')
 summary = Y[rows, cols]
-summary
+round( summary, digits = 3 )
 # Theta draws
 draws = matrix(c( parameters$mu,
                   parameters$phi,
@@ -542,19 +559,19 @@ abs_plots(draws[9:(T+7), ],  log.ret)
 ################################################################################
 ############### dic
 vgamma_dic = svmsmn_dic(data = log.ret, y0 = 0, 
-                    param_draws = draws[ c( 4:6, 
-                                            8:(T+7),
-                                            (T+8):(nrow(draws)) ), ]
+                        param_draws = draws[ c( 4:6, 
+                                                8:(T+7),
+                                                (T+8):(nrow(draws)) ), ]
 )
 ############### waic
 vgamma_waic = svmsmn_waic(data = log.ret, y0 = 0,
-                      draws = draws[ c( 4:6, 
-                                        8:(T+7),
-                                        (T+8):(nrow(draws)) ), ]
+                          draws = draws[ c( 4:6, 
+                                            8:(T+7),
+                                            (T+8):(nrow(draws)) ), ]
 )
 ############### loo
 vgamma_loo = svmsmn_loo(data = log.ret, y0 = 0, 
-                    draws = draws[ c( 4:6, 
-                                      8:(T+7),
-                                      (T+8):(nrow(draws)) ), ]
+                        draws = draws[ c( 4:6, 
+                                          8:(T+7),
+                                          (T+8):(nrow(draws)) ), ]
 )
