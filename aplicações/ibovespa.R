@@ -208,7 +208,7 @@ slash_fit = stan_model( model_code = 'data{
                                         }
                                         ' )
 # vgamma
-vgama_fit = stan_model( model_code = 'data{
+vgamma_fit = stan_model( model_code = 'data{
                                           int<lower=0> T;
                                           real y0;
                                           vector[T] y;
