@@ -27,7 +27,7 @@ abs_plots = function( draws_h, y ){
   h = h + geom_ribbon(aes(x = 1:T, ymax = e.vol_max, ymin = e.vol_min), 
                       fill = 'blue' ,alpha = 0.2)
   h = h + geom_line(aes(obs, e.hat), linewidth = 0.75)
-  h = h + theme_test() + xlab('Tempo') + ylab('|Retornos|')
+  h = h + theme_test() + xlab('') + ylab('|Retornos|')
 }
 
 tail_plot = function(draws, model_name){
