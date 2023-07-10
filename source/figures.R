@@ -28,6 +28,9 @@ abs_plots = function( draws_h, y ){
                       fill = 'blue' ,alpha = 0.2)
   h = h + geom_line(aes(obs, e.hat), linewidth = 0.75)
   h = h + theme_test() + xlab('') + ylab('|Retornos|')
+  h = h + theme(axis.title.y = element_text(size = 18),
+                axis.text.x = element_text(size = 16),
+                axis.text.y = element_text(size = 18))
 }
 
 tail_plot = function(draws, model_name){
@@ -38,5 +41,8 @@ tail_plot = function(draws, model_name){
   h = ggplot(df) + geom_line(aes(x=obs, y = l)) 
   h = h + theme_test() + xlab('') 
   h = h + ylab(TeX(paste0('SVM-', model_name, ': ', '$\\lambda_{t}$')))
+  h = h + theme(axis.title.y = element_text(size = 18),
+                axis.text.x = element_text(size = 16),
+                axis.text.y = element_text(size = 18))
 }
 
