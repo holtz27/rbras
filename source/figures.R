@@ -27,6 +27,16 @@ abs_plots = function( draws_h, y ){
   h = h + geom_ribbon(aes(x = 1:T, ymax = e.vol_max, ymin = e.vol_min), 
                       fill = 'blue' ,alpha = 0.2)
   h = h + geom_line(aes(obs, e.hat), linewidth = 0.75)
-  h = h + theme_test() + xlab('Tempo') + ylab('|retornos|')
-  h
+  h = h + theme_test() + xlab('Tempo') + ylab('|Retornos|')
 }
+
+tail_plot = function(draws, model_name){
+  library(ggplot2)
+  library(latex2exp)
+  l_hat = apply(draws, MARGIN = 1, mean)
+  df = data.frame(obs = 1:(length(l_hat)), l = l_hat)
+  h = ggplot(df) + geom_line(aes(x=obs, y = l)) 
+  h = h + theme_test() + xlab('') 
+  h = h + ylab(TeX(paste0('SVM-', model_name, ': ', '$\\lambda_{t}$')))
+}
+
