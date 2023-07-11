@@ -14,14 +14,20 @@ library(ggplot2)
 df = data.frame( Retorno = log.ret, Tempo = dates[-1] )
 
 g = ggplot(df) + geom_line(aes(x = Tempo, y = Retorno))
-g = g + scale_x_date(date_breaks = "45 month", date_labels =  "%d %b %Y")
-g = g + theme_test()
-#g
+g = g + scale_x_date(date_breaks = "58 month", date_labels = "%b %Y")
+g = g + theme_test() + theme(axis.title.y = element_text(size = 18),
+                             axis.text.x = element_text(size = 16),
+                             axis.text.y = element_text(size = 18))
+g = g + xlab('')
+g
 
 h = ggplot( df, aes(Retorno) )
 h = h + geom_histogram(aes(y = after_stat(density)), bins = 40, color = 'white')
 h = h + theme_test() + ylab('')
-#h
+h = h + theme_test() + theme(axis.title.x = element_text(size = 18),
+                             axis.text.x = element_text(size = 18),
+                             axis.text.y = element_text(size = 18))
+h
 
 gridExtra::grid.arrange(g, h, nrow = 1, ncol = 2) 
 
@@ -550,7 +556,9 @@ N_eff_theta = coda::effectiveSize( mcmc )
 N_eff_theta
 trace_plots(draws[1:7, ], 
             names = c('mu', 'phi', 'sigma', 'b0', 'b1', 'b2', 'v') )
-abs_plots(draws[9:(T+7), ],  log.ret)
+g = abs_plots(draws[8:(T+6), ], dates[-1], log.ret)
+h = tail_plot(draws[(T+7):nrow(draws), ], dates[-1],'VG')
+gridExtra::grid.arrange(h, g, nrow = 1, ncol = 2) 
 ################################################################################
 ############################## Model Selection
 # p( y | theta ) = p( y | b, theta_h, v, h ) = p( y | b, h )
